@@ -26,6 +26,7 @@ const useRtc = (channelName = 'awesome-cm') => {
   const receiveChannel = useRef(null)
   const [description, setDescription] = useState('')
   const [message, setMessage] = useState('')
+  const [isConnected, setIsConnected] = useState(false)
 
   function onStart() {
     conn.current = new RTCPeerConnection(servers, pcConstraint)
@@ -37,8 +38,14 @@ const useRtc = (channelName = 'awesome-cm') => {
       log.debug('onDataChannel', event)
       receiveChannel.current = event.channel
       receiveChannel.current.onmessage = evt => setMessage(evt.data)
-      receiveChannel.current.onopen = () => log.info('receiveChannel open')
-      receiveChannel.current.onclose = () => log.info('receiveChannel close')
+      receiveChannel.current.onopen = () => {
+        log.info('receiveChannel open')
+        setIsConnected(true)
+      }
+      receiveChannel.current.onclose = () => {
+        log.info('receiveChannel close')
+        setIsConnected(false)
+      }
     }
 
     async function onIceCandidate(event) {
@@ -105,13 +112,15 @@ const useRtc = (channelName = 'awesome-cm') => {
     createOffer,
     acceptOffer,
     remoteResponse,
+    isConnected,
     sendData,
     onClose,
   }
 }
 
 function App() {
-  const { onStart, onClose, description, message, createOffer, acceptOffer, remoteResponse, sendData } = useRtc()
+  const { onStart, onClose, description, message, createOffer, acceptOffer, remoteResponse, sendData, isConnected } =
+    useRtc()
   const [isLocal, setIsLocal] = useState(null)
   const [remoteDescription, setRemoteDescription] = useState('')
 
@@ -159,8 +168,13 @@ function App() {
         </button>
       )}
 
-      <h2>7. Interaction</h2>
-      <textarea className="output" value={message} onChange={e => sendData(e.target.value)}></textarea>
+      <h2>7. Interaction {isConnected ? '(Ready!!! Type below)' : '(Not connected)'}</h2>
+      <textarea
+        className="output"
+        value={message}
+        onChange={e => sendData(e.target.value)}
+        disabled={!isConnected}
+      ></textarea>
     </div>
   )
 }
