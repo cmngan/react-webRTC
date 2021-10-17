@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+textarea.output {
+  width: 80%;
+  min-height: 100px;
+}
+
+button.a {
+  background-color: transparent;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  color: darkblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
