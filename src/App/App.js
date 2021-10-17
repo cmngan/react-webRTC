@@ -94,7 +94,7 @@ const useRtc = (channelName = 'awesome-cm') => {
     sendChannel.current.send(value)
     log.debug('Sent Data: ' + value)
     // Set local
-    // setMessage(value)
+    setMessage(value)
   }
 
   return {
